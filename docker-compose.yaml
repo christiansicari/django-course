@@ -25,7 +25,7 @@ services:
   db:
     image: postgres:13-alpine
     volumes:
-      - django-db:/var/lib/postgres/data
+      - django-db:/var/lib/postgresql/data
     environment:
       - POSTGRES_DB=django
       - POSTGRES_USER=admin
