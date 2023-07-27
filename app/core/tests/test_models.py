@@ -10,7 +10,6 @@ from core import models
 def create_user(email="user@example.com", password="pass1233"):
     return get_user_model().objects.create_user(email=email, password=password)
 
-
    
 class ModelTests(TestCase):
     def test_create_user_with_email_successful(self):
@@ -65,8 +64,7 @@ class ModelTests(TestCase):
         user = create_user()
         tag = models.Tag.objects.create(user=user, name="Tag1")
         self.assertEqual(str(tag), tag.name)
-
-    
+  
     def test_create_ingredients(self):
         user = create_user()
         ingredient = models.Ingredient.objects.create(name="Sugar", user=user)

@@ -9,6 +9,7 @@ from recipe.serializers import TagSerializer
 
 TAGS_URL = reverse("recipe:tag-list")
 
+
 def detail_url(tag_id):
     return reverse('recipe:tag-detail', args=(tag_id, ))
 
@@ -62,7 +63,6 @@ class PrivateAPITagsTest(TestCase):
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(tag.name, payload['name'])
-
 
     def test_delete_tag(self):
         tag = Tag.objects.create(name="breakfast", user=self.user)

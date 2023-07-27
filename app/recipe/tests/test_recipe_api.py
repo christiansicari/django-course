@@ -59,7 +59,8 @@ class PrivateRecipeAPITests(TestCase):
         self.assertEqual(res.data, serializer.data)
 
     def test_recipe_list_auth_user(self):
-        other_user = create_user(email="other@example.com", password="pass1234")
+        other_user = create_user(email="other@example.com", 
+                                 password="pass1234")
 
         create_recipe(user=other_user, title="Pasta e melanzane")
         create_recipe(user=other_user, title="Pesto")
@@ -135,7 +136,8 @@ class PrivateRecipeAPITests(TestCase):
         self.assertEqual(recipe.user, self.user)
 
     def test_update_user_returns_error(self):
-        new_user = create_user(email="anotherone@example.com", password="pass123")
+        new_user = create_user(email="anotherone@example.com", 
+                               password="pass123")
         recipe = create_recipe(user=self.user)
         payload = {
              "user": new_user.id
@@ -155,7 +157,8 @@ class PrivateRecipeAPITests(TestCase):
         self.assertFalse(Recipe.objects.filter(id=recipe.id).exists())
 
     def test_other_users_recipe_error(self):
-        new_user = create_user(email="anotherone@example.com", password="pass123")
+        new_user = create_user(email="anotherone@example.com", 
+                               password="pass123")
         recipe = create_recipe(user=new_user)
 
         url = detail_url(recipe.id)
@@ -180,7 +183,8 @@ class PrivateRecipeAPITests(TestCase):
         self.assertEqual(recipe.tags.count(), 2)
         
         for tag in payload['tags']:
-            exist = recipe.tags.filter(name=tag['name'], user=self.user).exists()
+            exist = recipe.tags.filter(name=tag['name'], user=self.user)\
+                .exists()
             self.assertTrue(exist)
 
     def test_create_recipe_with_existing_tag(self):
@@ -201,9 +205,9 @@ class PrivateRecipeAPITests(TestCase):
         self.assertEqual(recipe.tags.count(), 2)
         self.assertIn(tag, recipe.tags.all())
         for tag in payload['tags']:
-            exist = recipe.tags.filter(name=tag['name'], user=self.user).exists()
+            exist = recipe.tags.filter(name=tag['name'], user=self.user)\
+                .exists()
             self.assertTrue(exist)
-
 
     def test_create_tag_on_update(self):
         recipe = create_recipe(user=self.user)
@@ -214,7 +218,6 @@ class PrivateRecipeAPITests(TestCase):
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         new_tag = Tag.objects.get(user=self.user, name='lunch')
         self.assertIn(new_tag, recipe.tags.all())
-
 
     def test_update_recipe_assign_tag(self):
         tag_breakfast = Tag.objects.create(name="breakfast", user=self.user)
@@ -228,8 +231,7 @@ class PrivateRecipeAPITests(TestCase):
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertIn(tag_lunch, recipe.tags.all())
-        self.assertNotIn(tag_breakfast, recipe.tags.all())
-        
+        self.assertNotIn(tag_breakfast, recipe.tags.all())    
 
     def test_clear_recipe_tag(self):
         tag = Tag.objects.create(name="breakfast", user=self.user)
