@@ -19,7 +19,7 @@ def recipe_image_file_path(instance, filename):
 
 
 class UserManager(BaseUserManager):
-    
+
     def create_user(self, email, password=None, **extra_fields):
         if not email:
             raise ValueError("Email cannot be blank")
@@ -28,7 +28,7 @@ class UserManager(BaseUserManager):
         user.save(using=self._db)
 
         return user
-    
+
     def create_superuser(self, email, password):
         user = self.create_user(email, password)
         user.is_staff = True
@@ -75,7 +75,7 @@ class Tag(models.Model):
 
     def __str__(self):
         return self.name
-    
+
 
 class Ingredient(models.Model):
     name = models.CharField(max_length=255)
@@ -86,4 +86,3 @@ class Ingredient(models.Model):
 
     def __str__(self):
         return self.name
-    

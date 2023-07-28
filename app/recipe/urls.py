@@ -1,5 +1,5 @@
 from django.urls import (
-    path, include, 
+    path, include
 )
 from rest_framework.routers import DefaultRouter
 from recipe import views
@@ -15,5 +15,3 @@ app_name = 'recipe'
 urlpatterns = [
     path('', include(router.urls))
 ]
-
-

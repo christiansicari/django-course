@@ -3,7 +3,7 @@ from core.models import Recipe, Tag, Ingredient
 
 
 class TagSerializer(serializers.ModelSerializer):
-    
+
     class Meta():
         model = Tag
         fields = ['id', 'name']
@@ -27,7 +27,7 @@ class RecipeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Recipe
         read_only_fields = ["id"]
-        fields = ["id", "title", "time_minutes", "price", "link", "tags", 
+        fields = ["id", "title", "time_minutes", "price", "link", "tags",
                   "ingredients"]
 
     def _get_or_create_tags(self, tags, recipe):
@@ -42,9 +42,9 @@ class RecipeSerializer(serializers.ModelSerializer):
         for ingredient in ingredients:
             obj, created = Ingredient.objects.get_or_create(user=auth_user,
                                                             **ingredient)
-            
+
             recipe.ingredients.add(obj)
-    
+
     def create(self, validated_data):
         tags = validated_data.pop("tags", [])
         ingredients = validated_data.pop("ingredients", [])
@@ -62,10 +62,10 @@ class RecipeSerializer(serializers.ModelSerializer):
         if ingredients is not None:
             instance.ingredients.clear()
             self._get_or_create_ingredients(ingredients, instance)
-        
+
         for attr, val in validated_data.items():
             setattr(instance, attr, val)
-        
+
         instance.save()
         return instance
 
@@ -81,4 +81,3 @@ class RecipeImageSerializer(serializers.ModelSerializer):
         fields = ['id', 'image']
         read_only_feed = ['id']
         extra_kwargs = {'image': {'required': True}}
-        
