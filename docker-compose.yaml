@@ -9,6 +9,7 @@ services:
       - 8000:8000
     volumes:
       - ./app:/app
+      - dev-static:/vol/web
     command: >
       sh -c "
              python manage.py wait_for_db &&
@@ -33,6 +34,7 @@ services:
   
 volumes:
   django-db:
+  dev-static:
 
 
 
