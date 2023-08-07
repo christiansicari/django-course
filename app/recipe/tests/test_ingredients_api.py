@@ -3,8 +3,9 @@ from django.urls import reverse
 from django.test import TestCase
 from rest_framework import status
 from rest_framework.test import APIClient
-from core.models import Ingredient
+from core.models import Ingredient, Recipe
 from recipe.serializers import IngredientSerializer
+from decimal import Decimal
 
 INGREDIENTS_URL = reverse('recipe:ingredient-list')
 
@@ -81,3 +82,35 @@ class PrivateIngredientsAPITests(TestCase):
 
         self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)
         self.assertFalse(Ingredient.objects.filter(user=self.user).exists())
+
+    def test_filter_ingredient_assigned_to_recipe(self):
+        in1 = Ingredient.objects.create(user=self.user, name="mulinciani")
+        in2 = Ingredient.objects.create(user=self.user, name="pamrigiano")
+        in3 = Ingredient.objects.create(user=self.user, name="prosciutto")
+        
+        recipe = Recipe.objects.create(user=self.user, title="Parmigiana",
+                                       price=Decimal("10.20"), time_minutes=10)
+        recipe.ingredients.add(in1)
+        recipe.ingredients.add(in2)
+
+        res = self.client.get(INGREDIENTS_URL, {'assigned_only': 1})
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertIn(IngredientSerializer(in1).data, res.data)
+        self.assertIn(IngredientSerializer(in2).data, res.data)
+        self.assertNotIn(IngredientSerializer(in3).data, res.data)
+
+    def test_filter_ingredient_unique(self):
+        in1 = Ingredient.objects.create(user=self.user, name="mulinciani")
+        Ingredient.objects.create(user=self.user, name="lenticchie")
+
+        r1 = Recipe.objects.create(user=self.user, title="Parmigiana",
+                                   price=Decimal("10.20"), time_minutes=10)
+        r2 = Recipe.objects.create(user=self.user, title="Parmigiana",
+                                   price=Decimal("10.20"), time_minutes=10)
+       
+        r1.ingredients.add(in1)
+        r2.ingredients.add(in1)
+        res = self.client.get(INGREDIENTS_URL, {'assigned_only': 1})
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(res.data), 1)
+

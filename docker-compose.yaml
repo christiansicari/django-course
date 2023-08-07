@@ -20,6 +20,7 @@ services:
       - DB_NAME=django
       - DB_USER=admin
       - DB_PASS=admin
+      - DEBUG=0
     depends_on:
       - db
 
